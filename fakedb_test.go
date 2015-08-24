@@ -725,6 +725,14 @@ type rowsCursor struct {
 	bytesClone map[*byte][]byte
 }
 
+func (rc *rowsCursor) Sibling() (driver.Rows, error) {
+	return nil, nil
+}
+
+func (rc *rowsCursor) MoreResults() bool {
+	return false
+}
+
 func (rc *rowsCursor) Close() error {
 	if !rc.closed {
 		for _, bs := range rc.bytesClone {

@@ -57,3 +57,17 @@ diff /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
 < 	"database/sql/driver"
 ---
 > 	"databasex/sql/driver"
+diff /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
+173a174,185
+> 
+> 	// MoreResults returns if there are other result sets exists
+> 	//
+> 	// After iterate the current result set and Next() returns false,
+> 	// then call this method to determine if there are some onther result
+> 	// sets exists, if it does, call Sibling to change to that Rows.
+> 	MoreResults() bool
+> 
+> 	// Sibling is called to pululate multi results in one query.
+> 	//
+> 	// Sibling should return io.EOF when there are no more results
+> 	Sibling() (Rows, error)
