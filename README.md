@@ -54,6 +54,6 @@ All modifications are listed in the orig.diff file in both sql and mysql repo.
 
 1. `go get -u github.com/databasex/sql`
 2. `go get -u github.com/databasex/mysql`
-3. replace `database/sql` and `_ go-sql-driver/mysql` imports with **`databasex/sql`** and **`_ databasex/mysq`**
-4. using **`mysqlx`** as the driver type when calling sql.Open() function, and append `"&clientMultiResults=true"` to your DSN.
+3. Replace `database/sql` and `_ go-sql-driver/mysql` imports with **`databasex/sql`** and **`_ databasex/mysql`**
+4. When calling sql.Open, using **`mysqlx`** as the driver type and append `"&clientMultiResults=true"` to your DSN.
 5. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
