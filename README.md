@@ -6,7 +6,36 @@ The motivation to create this package, comes from that the standard database/sql
 
 Developers of `go-sql-driver/mysql` has confirmed that they cannot support this feature until golang's database API change first.
 
-So I made this dirty hack, an independent package named `databasex` to avoid name conflicts. 
+So I made this dirty hack, an independent package named `databasex` to avoid name conflicts.
+
+### API Changes
+- database.sql.Rows
+
+```go
+// Sibling forward the next result set in current context.
+//
+// To support multi result set feature, append clientMultiResults=true
+// to DSN string passed to sql.Open()
+//
+// Currently only support stored procedure to generate multi resultsets,
+// using multi statements also possible , welcome to contribue ;-）
+func (rs *Rows) Sibling() bool {
+   ```
+   
+- database.sql.driver.Rows
+```go
+	// MoreResults returns if there are other result sets exists
+	//
+	// After iterate the current result set and Next() returns false,
+	// then call this method to determine if there are some onther result
+	// sets exists, if it does, call Sibling to change to that Rows.
+	MoreResults() bool
+
+	// Sibling is called to pululate multi results in one query.
+	//
+	// Sibling should return io.EOF when there are no more results
+	Sibling() (Rows, error)
+```
 
 ### Modifications
 This hack based on the following code:
