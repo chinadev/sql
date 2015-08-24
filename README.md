@@ -9,7 +9,7 @@ Developers of `go-sql-driver/mysql` has confirmed that they cannot support this 
 So I made this dirty hack, an independent package named `databasex` to avoid name conflicts.
 
 ### API Changes
-- database.sql.Rows
+- **`database/sql/Rows`** type added one method.
 
 ```go
 	// Sibling forward the next result set in current context.
@@ -22,7 +22,7 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 	func (rs *Rows) Sibling() bool 
    ```
    
-- database.sql.driver.Rows
+- **`database/sql/driver/Rows`** interface added 2 methods.
 ```go
 	// MoreResults returns if there are other result sets exists
 	//
@@ -40,18 +40,20 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 ### Modifications
 This hack based on the following code:
 
-1. source code of `database/sql` package from golang 1.5
+1. source code of **`database/sql`** package from golang 1.5
    - add a Sibling() method for sql.Rows type.
    - add MoreResults() / Sibling() method to driver.Rows interface
-2. source code of `go-sql-driver/mysql` based on commit: 3dd7008ac1529aca1bcd8a9db75228a71ba23cac
+2. source code of **`go-sql-driver/mysql`** based on commit: 3dd7008ac1529aca1bcd8a9db75228a71ba23cac
   - implement the sql.driver.Rows interfaces
 
 All modifications are listed in the orig.diff file in both sql and mysql repo.
+- [Changes to go's database/sql package](https://github.com/databasex/sql/blob/master/orig.diff)
+- [Changes to go-sql-driver/mysql pakcage](https://github.com/databasex/mysql/blob/master/orig.diff)
 
 ### Usage 
 
 1. `go get -u github.com/databasex/sql`
 2. `go get -u github.com/databasex/mysql`
-3. replace `database/sql` and `_ go-sql-driver/mysql` imports with `databasex/sql` and `_ databasex/mysq`
-4. using `mysqlx` as the driver type when calling sql.Open() function, and append `"&clientMultiResults=true"` to your DSN.
-5. For detail, reference [multi_test.go](http://github.com/databasex/mysql/blob/master/multi_test.go)
+3. replace `database/sql` and `_ go-sql-driver/mysql` imports with **`databasex/sql`** and **`_ databasex/mysq`**
+4. using **`mysqlx`** as the driver type when calling sql.Open() function, and append `"&clientMultiResults=true"` to your DSN.
+5. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
