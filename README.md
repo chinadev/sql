@@ -1,10 +1,10 @@
 ## Golang database/sql API with Multi Result Set support.
 
-This is a dirty hack to golang's database/sql package. Yes, its dirty until golang provide its offical way to support multResultSet returned by stored procedure (or multi statements).
+This is a dirty hack to golang's database/sql package. 
 
 The motivation to create this package, comes from that the standard database/sql package lacks the support for Multi ResultSet feature. This is not a big issue for common usage, but for users who using stored procedures, they will encounter "Command out of sync" error. 
 
-Developers of `go-sql-driver/mysql` has confirmed that they cannot support this feature until golang's database API change first.
+Developers of **`go-sql-driver/mysql`** has confirmed that they cannot support this feature until golang's database API change first. So, it will remain dirty until Golang provide its offical way to support multiResultSet returned by stored procedure (or multi statements).
 
 So I made this dirty hack, an independent package named `databasex` to avoid name conflicts.
 
