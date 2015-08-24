@@ -8,6 +8,11 @@ Developers of **`go-sql-driver/mysql`** has confirmed that they cannot support t
 
 So I made this dirty hack, an independent package named `databasex` to avoid name conflicts.
 
+### Features
+- Support return multi result sets in text protocol , ex `CALL sp_test(1,2,3)`
+- Support return multi result sets in prepared statement protocol, ex `CALL sp_test(???)`
+- (TODO): Supoort return out paramater of stored procedure as a new Result Set
+
 ### API Changes
 - **`database/sql/Rows`** type added one method.
 
@@ -56,4 +61,5 @@ All modifications are listed in the orig.diff file in both sql and mysql repo.
 2. `go get -u github.com/databasex/mysql`
 3. Replace `database/sql` and `_ go-sql-driver/mysql` imports with **`databasex/sql`** and **`_ databasex/mysql`**
 4. When calling sql.Open, using **`mysqlx`** as the driver type and append `"&clientMultiResults=true"` to your DSN.
-5. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
+5. To enable return multi result sets with prepared statement, append `"&clientPSMultiResults=true"` to your DSN.
+6. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
