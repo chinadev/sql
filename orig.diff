@@ -1,0 +1,59 @@
+Only in .: .git
+Only in .: README.md
+diff /usr/local/go/src/database/sql/convert.go ./convert.go
+10c10
+< 	"database/sql/driver"
+---
+> 	"databasex/sql/driver"
+diff /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
+8c8
+< 	"database/sql/driver"
+---
+> 	"databasex/sql/driver"
+Common subdirectories: /usr/local/go/src/database/sql/driver and ./driver
+diff /usr/local/go/src/database/sql/example_test.go ./example_test.go
+8c8
+< 	"database/sql"
+---
+> 	"databasex/sql"
+diff /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
+8c8
+< 	"database/sql/driver"
+---
+> 	"databasex/sql/driver"
+Only in .: orig.diff
+diff /usr/local/go/src/database/sql/sql.go ./sql.go
+16c16
+< 	"database/sql/driver"
+---
+> 	"databasex/sql/driver"
+729,730c729,730
+< 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
+< 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
+---
+> 	errConnClosed = errors.New("databasex/sql: internal sentinel error: conn is closed")
+> 	errConnBusy   = errors.New("databasex/sql: internal sentinel error: conn is busy")
+1641c1641,1643
+< 		rs.Close()
+---
+> 		if !(io.EOF == rs.lasterr && rs.rowsi.MoreResults()) {
+> 			rs.Close()
+> 		}
+1646a1649,1660
+> func (rs *Rows) Sibling() bool {
+> 	rows, err := rs.rowsi.Sibling()
+> 	if nil == err {
+> 		rs.rowsi = rows
+> 		rs.closed = false
+> 		rs.lastcols = nil
+> 		rs.lasterr = nil
+> 		return true
+> 	}
+> 	return false
+> }
+> 
+diff /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
+8c8
+< 	"database/sql/driver"
+---
+> 	"databasex/sql/driver"
