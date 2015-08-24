@@ -1,4 +1,4 @@
-# databasex/sql - Golang database/sql API with Multi Result Set support.
+## Golang database/sql API with Multi Result Set support.
 
 This is a dirty hack to golang's database/sql package.
 
