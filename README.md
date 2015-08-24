@@ -12,14 +12,14 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 - database.sql.Rows
 
 ```go
-// Sibling forward the next result set in current context.
-//
-// To support multi result set feature, append clientMultiResults=true
-// to DSN string passed to sql.Open()
-//
-// Currently only support stored procedure to generate multi resultsets,
-// using multi statements also possible , welcome to contribue ;-）
-func (rs *Rows) Sibling() bool {
+	// Sibling forward the next result set in current context.
+	//
+	// To support multi result set feature, append clientMultiResults=true
+	// to DSN string passed to sql.Open()
+	//
+	// Currently only support stored procedure to generate multi resultsets,
+	// using multi statements also possible , welcome to contribue ;-）
+	func (rs *Rows) Sibling() bool 
    ```
    
 - database.sql.driver.Rows
