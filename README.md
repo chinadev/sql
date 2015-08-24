@@ -10,7 +10,7 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 
 ### Features
 - Support return multi result sets in text protocol , ex `CALL sp_test(1,2,3)`
-- Support return multi result sets in prepared statement protocol, ex `CALL sp_test(???)`
+- (TODO): Support return multi result sets in prepared statement protocol, ex `CALL sp_test(???)`
 - (TODO): Supoort return out paramater of stored procedure as a new Result Set
 
 ### API Changes
