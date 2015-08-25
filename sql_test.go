@@ -5,9 +5,9 @@
 package sql
 
 import (
-	"databasex/sql/driver"
 	"errors"
 	"fmt"
+	"github.com/databasex/sql/driver"
 	"math/rand"
 	"reflect"
 	"runtime"

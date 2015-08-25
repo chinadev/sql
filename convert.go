@@ -7,9 +7,9 @@
 package sql
 
 import (
-	"databasex/sql/driver"
 	"errors"
 	"fmt"
+	"github.com/databasex/sql/driver"
 	"reflect"
 	"strconv"
 )

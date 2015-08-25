@@ -5,8 +5,8 @@
 package sql_test
 
 import (
-	"databasex/sql"
 	"fmt"
+	"github.com/databasex/sql"
 	"log"
 )
 
