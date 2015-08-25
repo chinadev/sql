@@ -25,7 +25,7 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 	//
 	// Currently only support stored procedure to generate multi resultsets,
 	// using multi statements also possible , welcome to contribue ;-）
-	func (rs *Rows) Sibling() bool 
+	func (rs *Rows) Sibling() (Result, bool)
    ```
    
 - **`database/sql/driver/Rows`** interface added 2 methods.
