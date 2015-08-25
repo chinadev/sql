@@ -1,28 +1,50 @@
 Only in .: .git
 Only in .: README.md
-diff /usr/local/go/src/database/sql/convert.go ./convert.go
+diff -r /usr/local/go/src/database/sql/convert.go ./convert.go
 10c10
 < 	"database/sql/driver"
 ---
 > 	"databasex/sql/driver"
-diff /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
+diff -r /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
 8c8
 < 	"database/sql/driver"
 ---
 > 	"databasex/sql/driver"
-Common subdirectories: /usr/local/go/src/database/sql/driver and ./driver
-diff /usr/local/go/src/database/sql/example_test.go ./example_test.go
+diff -r /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
+173a174,185
+> 
+> 	// MoreResults returns if there are other result sets exists
+> 	//
+> 	// After iterate the current result set and Next() returns false,
+> 	// then call this method to determine if there are some onther result
+> 	// sets exists, if it does, call Sibling to change to that Rows.
+> 	MoreResults() bool
+> 
+> 	// Sibling is called to pululate multi results in one query.
+> 	//
+> 	// Sibling should return io.EOF when there are no more results
+> 	Sibling() (Rows, error)
+diff -r /usr/local/go/src/database/sql/example_test.go ./example_test.go
 8c8
 < 	"database/sql"
 ---
 > 	"databasex/sql"
-diff /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
+diff -r /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
 8c8
 < 	"database/sql/driver"
 ---
 > 	"databasex/sql/driver"
+727a728,735
+> func (rc *rowsCursor) Sibling() (driver.Rows, error) {
+> 	return nil, nil
+> }
+> 
+> func (rc *rowsCursor) MoreResults() bool {
+> 	return false
+> }
+> 
 Only in .: orig.diff
-diff /usr/local/go/src/database/sql/sql.go ./sql.go
+diff -r /usr/local/go/src/database/sql/sql.go ./sql.go
 16c16
 < 	"database/sql/driver"
 ---
@@ -39,7 +61,14 @@ diff /usr/local/go/src/database/sql/sql.go ./sql.go
 > 		if !(io.EOF == rs.lasterr && rs.rowsi.MoreResults()) {
 > 			rs.Close()
 > 		}
-1646a1649,1660
+1646a1649,1667
+> // Sibling forward the next result set in current context.
+> //
+> // To support multi result set feature, append clientMultiResults=true
+> // to DSN string passed to sql.Open()
+> //
+> // Currently only support stored procedure to generate multi resultsets,
+> // using multi statements also possible , welcome to contribue ;-）
 > func (rs *Rows) Sibling() bool {
 > 	rows, err := rs.rowsi.Sibling()
 > 	if nil == err {
@@ -52,22 +81,8 @@ diff /usr/local/go/src/database/sql/sql.go ./sql.go
 > 	return false
 > }
 > 
-diff /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
+diff -r /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
 8c8
 < 	"database/sql/driver"
 ---
 > 	"databasex/sql/driver"
-diff /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
-173a174,185
-> 
-> 	// MoreResults returns if there are other result sets exists
-> 	//
-> 	// After iterate the current result set and Next() returns false,
-> 	// then call this method to determine if there are some onther result
-> 	// sets exists, if it does, call Sibling to change to that Rows.
-> 	MoreResults() bool
-> 
-> 	// Sibling is called to pululate multi results in one query.
-> 	//
-> 	// Sibling should return io.EOF when there are no more results
-> 	Sibling() (Rows, error)
