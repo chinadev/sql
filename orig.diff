@@ -1,18 +1,19 @@
 Only in .: .git
 Only in .: README.md
 diff -r /usr/local/go/src/database/sql/convert.go ./convert.go
-10c10
+10d9
 < 	"database/sql/driver"
----
-> 	"databasex/sql/driver"
+12a12
+> 	"github.com/databasex/sql/driver"
 diff -r /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
-8c8
+8d7
 < 	"database/sql/driver"
----
-> 	"databasex/sql/driver"
+9a9
+> 	"github.com/databasex/sql/driver"
 diff -r /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
-173a174,185
+173a174,186
 > 
+> 	// MoreResults returns if there are other result sets exists
 > 	// MoreResults returns if there are other result sets exists
 > 	//
 > 	// After iterate the current result set and Next() returns false,
@@ -23,17 +24,17 @@ diff -r /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
 > 	// Sibling is called to pululate multi results in one query.
 > 	//
 > 	// Sibling should return io.EOF when there are no more results
-> 	Sibling() (Rows, error)
+> 	Sibling() (Rows, Result, error)
 diff -r /usr/local/go/src/database/sql/example_test.go ./example_test.go
-8c8
+8d7
 < 	"database/sql"
----
-> 	"databasex/sql"
+9a9
+> 	"github.com/databasex/sql"
 diff -r /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
-8c8
+8d7
 < 	"database/sql/driver"
----
-> 	"databasex/sql/driver"
+10a10
+> 	"github.com/databasex/sql/driver"
 727a728,735
 > func (rc *rowsCursor) Sibling() (driver.Rows, error) {
 > 	return nil, nil
@@ -45,10 +46,10 @@ diff -r /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
 > 
 Only in .: orig.diff
 diff -r /usr/local/go/src/database/sql/sql.go ./sql.go
-16c16
+16d15
 < 	"database/sql/driver"
----
-> 	"databasex/sql/driver"
+18a18
+> 	"github.com/databasex/sql/driver"
 729,730c729,730
 < 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
 < 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
@@ -67,22 +68,22 @@ diff -r /usr/local/go/src/database/sql/sql.go ./sql.go
 > // To support multi result set feature, append clientMultiResults=true
 > // to DSN string passed to sql.Open()
 > //
-> // Currently only support stored procedure to generate multi resultsets,
-> // using multi statements also possible , welcome to contribue ;-）
-> func (rs *Rows) Sibling() bool {
-> 	rows, err := rs.rowsi.Sibling()
+> // Currently only support stored procedure to generate multi resultsets
+> func (rs *Rows) Sibling() (Result, bool) {
+> 	rows, res, err := rs.rowsi.Sibling()
 > 	if nil == err {
 > 		rs.rowsi = rows
 > 		rs.closed = false
 > 		rs.lastcols = nil
 > 		rs.lasterr = nil
-> 		return true
+> 		return res, true
 > 	}
-> 	return false
+> 
+> 	return res, false
 > }
 > 
 diff -r /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
-8c8
+8d7
 < 	"database/sql/driver"
----
-> 	"databasex/sql/driver"
+10a10
+> 	"github.com/databasex/sql/driver"
