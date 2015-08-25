@@ -1,4 +1,4 @@
-## Golang `database/sql` API with Multi Result Set support.
+## Golang `database/sql` with stored procedure support.
 
 This is a dirty hack to golang's **`database/sql`** package. 
 
@@ -10,8 +10,9 @@ So I made this dirty hack, an independent package named `databasex` to avoid nam
 
 ### Features
 - Support return multi result sets in text protocol , ex `CALL sp_test(1,2,3)`
-- (TODO): Support return multi result sets in prepared statement protocol, ex `CALL sp_test(???)`
-- (TODO): Supoort return out paramater of stored procedure as a new Result Set
+- Support return multi result sets in prepared statement protocol, ex `CALL sp_test(???)`
+- Supoort return out paramater of stored procedure as a new Result Set
+- For usage, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
 
 ### API Changes
 - **`database/sql/Rows`** type added one method.
