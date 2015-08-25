@@ -173,6 +173,7 @@ type Rows interface {
 	Next(dest []Value) error
 
 	// MoreResults returns if there are other result sets exists
+	// MoreResults returns if there are other result sets exists
 	//
 	// After iterate the current result set and Next() returns false,
 	// then call this method to determine if there are some onther result
@@ -182,7 +183,7 @@ type Rows interface {
 	// Sibling is called to pululate multi results in one query.
 	//
 	// Sibling should return io.EOF when there are no more results
-	Sibling() (Rows, error)
+	Sibling() (Rows, Result, error)
 }
 
 // Tx is a transaction.

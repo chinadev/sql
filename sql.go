@@ -1651,18 +1651,18 @@ func (rs *Rows) Next() bool {
 // To support multi result set feature, append clientMultiResults=true
 // to DSN string passed to sql.Open()
 //
-// Currently only support stored procedure to generate multi resultsets,
-// using multi statements also possible , welcome to contribue ;-）
-func (rs *Rows) Sibling() bool {
-	rows, err := rs.rowsi.Sibling()
+// Currently only support stored procedure to generate multi resultsets
+func (rs *Rows) Sibling() (Result, bool) {
+	rows, res, err := rs.rowsi.Sibling()
 	if nil == err {
 		rs.rowsi = rows
 		rs.closed = false
 		rs.lastcols = nil
 		rs.lasterr = nil
-		return true
+		return res, true
 	}
-	return false
+
+	return res, false
 }
 
 // Err returns the error, if any, that was encountered during iteration.
