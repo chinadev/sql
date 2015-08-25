@@ -725,8 +725,8 @@ type rowsCursor struct {
 	bytesClone map[*byte][]byte
 }
 
-func (rc *rowsCursor) Sibling() (driver.Rows, error) {
-	return nil, nil
+func (rc *rowsCursor) Sibling() (driver.Rows, driver.Result, error) {
+	return nil, nil, errors.New("dont support")
 }
 
 func (rc *rowsCursor) MoreResults() bool {
