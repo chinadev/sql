@@ -12,7 +12,7 @@ I named this package to an independent package named `databasex` to avoid name c
 - Support return multi result sets in text protocol , ex `CALL sp_test(1,2,3)`
 - Support return multi result sets in prepared statement protocol, ex `CALL sp_test(?,?,?)`
 - Supoort return out paramater of stored procedure as a new Result Set
-- For usage, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
+- For usage, reference [multi_test.go](https://database/mysql/blob/master/multi_test.go)
 
 ### API Changes
 - **`database/sql/Rows`** type added one method.
@@ -53,14 +53,15 @@ This hack based on the following code:
   - implement the sql.driver.Rows interfaces
 
 All modifications are listed in the orig.diff file in both sql and mysql repo.
-- [Changes to go's database/sql package](https://github.com/databasex/sql/blob/master/orig.diff)
-- [Changes to go-sql-driver/mysql pakcage](https://github.com/databasex/mysql/blob/master/orig.diff)
+- [Changes to go's database/sql package](https://database/sql/blob/master/database.patch)
+- [Changes to go-sql-driver/mysql pakcage](https://database/mysql/blob/master/orig.diff)
 
 ### Usage 
 
 1. `go get -u github.com/databasex/sql`
 2. `go get -u github.com/databasex/mysql`
-3. Replace `database/sql` and `_ go-sql-driver/mysql` imports with **`github.com/databasex/sql`** and **`_ github.com/databasex/mysql`**
-4. When calling sql.Open, using **`mysqlx`** as the driver type and append `"&clientMultiResults=true"` to your DSN.
+3. cd $GOROOT/src/database/sql, then apply the patch `patch -p1 < $GOROOT/src/github.com/databasex/sql/database.patch`
+3. Replace `_ go-sql-driver/mysql` imports with **`_ github.com/database/mysql`**
+4. When calling sql.Open, append `"&clientMultiResults=true"` to your DSN.
 5. To enable return multi result sets with prepared statement, append `"&clientPSMultiResults=true"` to your DSN.
-6. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
+6. For detail, reference [multi_test.go](https://database/mysql/blob/master/multi_test.go)

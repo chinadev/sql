@@ -5,9 +5,9 @@
 package sql
 
 import (
+	"database/sql/driver"
 	"errors"
 	"fmt"
-	"github.com/databasex/sql/driver"
 	"io"
 	"log"
 	"sort"

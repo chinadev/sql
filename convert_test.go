@@ -5,8 +5,8 @@
 package sql
 
 import (
+	"database/sql/driver"
 	"fmt"
-	"github.com/databasex/sql/driver"
 	"reflect"
 	"runtime"
 	"testing"

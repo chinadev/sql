@@ -1,0 +1,191 @@
+diff -rcN sql.orig/driver/driver.go sql.patched/driver/driver.go
+*** sql.orig/driver/driver.go	2015-09-03 17:52:19.000000000 +0800
+--- sql.patched/driver/driver.go	2015-09-03 17:59:52.000000000 +0800
+***************
+*** 171,176 ****
+--- 171,189 ----
+  	//
+  	// Next should return io.EOF when there are no more rows.
+  	Next(dest []Value) error
++ 
++ 	// MoreResults returns if there are other result sets exists
++ 	// MoreResults returns if there are other result sets exists
++ 	//
++ 	// After iterate the current result set and Next() returns false,
++ 	// then call this method to determine if there are some onther result
++ 	// sets exists, if it does, call Sibling to change to that Rows.
++ 	MoreResults() bool
++ 
++ 	// Sibling is called to pululate multi results in one query.
++ 	//
++ 	// Sibling should return io.EOF when there are no more results
++ 	Sibling() (Rows, Result, error)
+  }
+  
+  // Tx is a transaction.
+diff -rcN sql.orig/fakedb_test.go sql.patched/fakedb_test.go
+*** sql.orig/fakedb_test.go	2015-09-03 17:52:19.000000000 +0800
+--- sql.patched/fakedb_test.go	2015-09-03 17:59:52.000000000 +0800
+***************
+*** 725,730 ****
+--- 725,738 ----
+  	bytesClone map[*byte][]byte
+  }
+  
++ func (rc *rowsCursor) Sibling() (driver.Rows, driver.Result, error) {
++ 	return nil, nil, errors.New("dont support")
++ }
++ 
++ func (rc *rowsCursor) MoreResults() bool {
++ 	return false
++ }
++ 
+  func (rc *rowsCursor) Close() error {
+  	if !rc.closed {
+  		for _, bs := range rc.bytesClone {
+diff -rcN sql.orig/orig.diff sql.patched/orig.diff
+*** sql.orig/orig.diff	1970-01-01 08:00:00.000000000 +0800
+--- sql.patched/orig.diff	2015-09-03 17:59:52.000000000 +0800
+***************
+*** 0 ****
+--- 1,89 ----
++ Only in .: .git
++ Only in .: README.md
++ diff -r /usr/local/go/src/database/sql/convert.go ./convert.go
++ 10d9
++ < 	"database/sql/driver"
++ 12a12
++ > 	"database/sql/driver"
++ diff -r /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
++ 8d7
++ < 	"database/sql/driver"
++ 9a9
++ > 	"database/sql/driver"
++ diff -r /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
++ 173a174,186
++ > 
++ > 	// MoreResults returns if there are other result sets exists
++ > 	// MoreResults returns if there are other result sets exists
++ > 	//
++ > 	// After iterate the current result set and Next() returns false,
++ > 	// then call this method to determine if there are some onther result
++ > 	// sets exists, if it does, call Sibling to change to that Rows.
++ > 	MoreResults() bool
++ > 
++ > 	// Sibling is called to pululate multi results in one query.
++ > 	//
++ > 	// Sibling should return io.EOF when there are no more results
++ > 	Sibling() (Rows, Result, error)
++ diff -r /usr/local/go/src/database/sql/example_test.go ./example_test.go
++ 8d7
++ < 	"database/sql"
++ 9a9
++ > 	"database/sql"
++ diff -r /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
++ 8d7
++ < 	"database/sql/driver"
++ 10a10
++ > 	"database/sql/driver"
++ 727a728,735
++ > func (rc *rowsCursor) Sibling() (driver.Rows, error) {
++ > 	return nil, nil
++ > }
++ > 
++ > func (rc *rowsCursor) MoreResults() bool {
++ > 	return false
++ > }
++ > 
++ Only in .: orig.diff
++ diff -r /usr/local/go/src/database/sql/sql.go ./sql.go
++ 16d15
++ < 	"database/sql/driver"
++ 18a18
++ > 	"database/sql/driver"
++ 729,730c729,730
++ < 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
++ < 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
++ ---
++ > 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
++ > 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
++ 1641c1641,1643
++ < 		rs.Close()
++ ---
++ > 		if !(io.EOF == rs.lasterr && rs.rowsi.MoreResults()) {
++ > 			rs.Close()
++ > 		}
++ 1646a1649,1667
++ > // Sibling forward the next result set in current context.
++ > //
++ > // To support multi result set feature, append clientMultiResults=true
++ > // to DSN string passed to sql.Open()
++ > //
++ > // Currently only support stored procedure to generate multi resultsets
++ > func (rs *Rows) Sibling() (Result, bool) {
++ > 	rows, res, err := rs.rowsi.Sibling()
++ > 	if nil == err {
++ > 		rs.rowsi = rows
++ > 		rs.closed = false
++ > 		rs.lastcols = nil
++ > 		rs.lasterr = nil
++ > 		return res, true
++ > 	}
++ > 
++ > 	return res, false
++ > }
++ > 
++ diff -r /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
++ 8d7
++ < 	"database/sql/driver"
++ 10a10
++ > 	"database/sql/driver"
+diff -rcN sql.orig/sql.go sql.patched/sql.go
+*** sql.orig/sql.go	2015-09-03 17:52:19.000000000 +0800
+--- sql.patched/sql.go	2015-09-03 17:59:52.000000000 +0800
+***************
+*** 1638,1649 ****
+  	}
+  	rs.lasterr = rs.rowsi.Next(rs.lastcols)
+  	if rs.lasterr != nil {
+! 		rs.Close()
+  		return false
+  	}
+  	return true
+  }
+  
+  // Err returns the error, if any, that was encountered during iteration.
+  // Err may be called after an explicit or implicit Close.
+  func (rs *Rows) Err() error {
+--- 1638,1670 ----
+  	}
+  	rs.lasterr = rs.rowsi.Next(rs.lastcols)
+  	if rs.lasterr != nil {
+! 		if !(io.EOF == rs.lasterr && rs.rowsi.MoreResults()) {
+! 			rs.Close()
+! 		}
+  		return false
+  	}
+  	return true
+  }
+  
++ // Sibling forward the next result set in current context.
++ //
++ // To support multi result set feature, append clientMultiResults=true
++ // to DSN string passed to sql.Open()
++ //
++ // Currently only support stored procedure to generate multi resultsets
++ func (rs *Rows) Sibling() (Result, bool) {
++ 	rows, res, err := rs.rowsi.Sibling()
++ 	if nil == err {
++ 		rs.rowsi = rows
++ 		rs.closed = false
++ 		rs.lastcols = nil
++ 		rs.lasterr = nil
++ 		return res, true
++ 	}
++ 
++ 	return res, false
++ }
++ 
+  // Err returns the error, if any, that was encountered during iteration.
+  // Err may be called after an explicit or implicit Close.
+  func (rs *Rows) Err() error {

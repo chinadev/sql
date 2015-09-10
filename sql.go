@@ -13,9 +13,9 @@
 package sql
 
 import (
+	"database/sql/driver"
 	"errors"
 	"fmt"
-	"github.com/databasex/sql/driver"
 	"io"
 	"runtime"
 	"sort"
@@ -726,8 +726,8 @@ func (db *DB) conn(strategy connReuseStrategy) (*driverConn, error) {
 }
 
 var (
-	errConnClosed = errors.New("databasex/sql: internal sentinel error: conn is closed")
-	errConnBusy   = errors.New("databasex/sql: internal sentinel error: conn is busy")
+	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
+	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
 )
 
 // putConnHook is a hook for testing.

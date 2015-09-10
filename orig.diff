@@ -4,12 +4,12 @@ diff -r /usr/local/go/src/database/sql/convert.go ./convert.go
 10d9
 < 	"database/sql/driver"
 12a12
-> 	"github.com/databasex/sql/driver"
+> 	"database/sql/driver"
 diff -r /usr/local/go/src/database/sql/convert_test.go ./convert_test.go
 8d7
 < 	"database/sql/driver"
 9a9
-> 	"github.com/databasex/sql/driver"
+> 	"database/sql/driver"
 diff -r /usr/local/go/src/database/sql/driver/driver.go ./driver/driver.go
 173a174,186
 > 
@@ -29,12 +29,12 @@ diff -r /usr/local/go/src/database/sql/example_test.go ./example_test.go
 8d7
 < 	"database/sql"
 9a9
-> 	"github.com/databasex/sql"
+> 	"database/sql"
 diff -r /usr/local/go/src/database/sql/fakedb_test.go ./fakedb_test.go
 8d7
 < 	"database/sql/driver"
 10a10
-> 	"github.com/databasex/sql/driver"
+> 	"database/sql/driver"
 727a728,735
 > func (rc *rowsCursor) Sibling() (driver.Rows, error) {
 > 	return nil, nil
@@ -49,13 +49,13 @@ diff -r /usr/local/go/src/database/sql/sql.go ./sql.go
 16d15
 < 	"database/sql/driver"
 18a18
-> 	"github.com/databasex/sql/driver"
+> 	"database/sql/driver"
 729,730c729,730
 < 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
 < 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
 ---
-> 	errConnClosed = errors.New("databasex/sql: internal sentinel error: conn is closed")
-> 	errConnBusy   = errors.New("databasex/sql: internal sentinel error: conn is busy")
+> 	errConnClosed = errors.New("database/sql: internal sentinel error: conn is closed")
+> 	errConnBusy   = errors.New("database/sql: internal sentinel error: conn is busy")
 1641c1641,1643
 < 		rs.Close()
 ---
@@ -86,4 +86,4 @@ diff -r /usr/local/go/src/database/sql/sql_test.go ./sql_test.go
 8d7
 < 	"database/sql/driver"
 10a10
-> 	"github.com/databasex/sql/driver"
+> 	"database/sql/driver"
