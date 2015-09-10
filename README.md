@@ -2,6 +2,8 @@
 
 This is a dirty hack to golang's **`database/sql`** package. 
 
+**Currently only go-sql-driver/mysql is supported, dont apply this patch if you using other databases.**
+
 The motivation to create this package, comes from that the standard **`database/sql`** package lacks the support for Multi ResultSet feature. This is not a big issue for common usage, but for users who using stored procedures, they will encounter "Command out of sync" error. 
 
 Developers of **`go-sql-driver/mysql`** has confirmed that they cannot support this feature until golang's database API change first. So, it will remain dirty until Golang provide its offical way to support multiResultSet returned by stored procedure (or multi statements).
@@ -62,7 +64,7 @@ All modifications are listed in the orig.diff file in both sql and mysql repo.
 2. `go get -u github.com/databasex/mysql`
 3. `cd $GOROOT/src/database/sql`, then apply the patch `patch -p1 < $GOROOT/src/github.com/databasex/sql/database.patch`
 4. `rm -rf $GOROOT/pkg/darwin_amd64/database` to purge the compiled binary. `darwin_amd64` might be diffrent on linux/windows box.
-5. Replace `_ go-sql-driver/mysql` imports with **`_ github.com/databasex/mysql`**
+5. Replace `_ github.com/go-sql-driver/mysql` imports with **`_ github.com/databasex/mysql`**
 6. When calling sql.Open, append `"&clientMultiResults=true"` to your DSN.
 7. To enable return multi result sets with prepared statement, append `"&clientPSMultiResults=true"` to your DSN.
 8. For detail, reference [multi_test.go](https://github.com/databasex/mysql/blob/master/multi_test.go)
